@@ -5,7 +5,7 @@ var myApp = new Framework7({
 
 // Expose Internal DOM library
 var $$ = Framework7.$;
-
+var remoteURL = 'http://tm.wpilife.org:8080/engage/';
 // Add main view
 var mainView = myApp.addView('.view-main', {
     // Enable Dynamic Navbar for this view
@@ -29,14 +29,40 @@ $$(document).on('ajaxComplete', function() {
 $$(document).on('pageInit', function(e) {
     var page = e.detail.page;
     // Handle Modals Page event when it is init
-    remoteURL = '';
-    type = 'occupancy';
-    isPrediction = 0;
+    
 
     if (page.name === 'list') {
-        remoteURL = 'http://smarking.net:8080/garage?garage=centralWest&';
         $.getJSON(remoteURL + 'type=' + type).done(function(data) {
-            genChartByHighCharts(data, 'chart-content', type, type);
+            
+        });
+    }
+    
+    // Pull To Refresh Demo
+    if (page.name === 'pull-to-refresh') {
+        // Dummy Content
+        var songs = ['Yellow Submarine', 'Don\'t Stop Me Now', 'Billie Jean', 'Californication'];
+        var authors = ['Beatles', 'Queen', 'Michael Jackson', 'Red Hot Chili Peppers'];
+        // Pull to refresh content
+        var ptrContent = $$(page.container).find('.pull-to-refresh-content');
+        // Add 'refresh' listener on it
+        ptrContent.on('refresh', function (e) {
+            // Emulate 2s loading
+            setTimeout(function () {
+                var picURL = 'http://hhhhold.com/88/d/jpg?' + Math.round(Math.random() * 100);
+                var song = songs[Math.floor(Math.random() * songs.length)];
+                var author = authors[Math.floor(Math.random() * authors.length)];
+                var linkHTML = '<li class="item-content">' +
+                                    '<div class="item-inner">' +
+                                        '<div class="item-title-row">' +
+                                            '<div class="item-title">' + song + '</div>' +
+                                        '</div>' +
+                                        '<div class="item-subtitle">' + author + '</div>' +
+                                    '</div>' +
+                                '</li>';
+                ptrContent.find('ul').prepend(linkHTML);
+                // When loading done, we need to "close" it
+                myApp.pullToRefreshDone();
+            }, 2000);
         });
     }
     
@@ -53,6 +79,13 @@ $$('.panel-left').on('open', function() {
 });
 $$('.panel-right').on('open', function() {
     $$('.statusbar-overlay').addClass('with-panel-right');
+    $.getJSON(remoteURL + 'showStat').done(function(data) {
+        //myApp.alert(data);
+        $$('#haoZanCount').text(data.haoZan);
+        $$('#shanZanCount').text(data.shanZan);
+        $$('#visitCount').text(data.visit);
+    });
+
 });
 $$('.panel-left, .panel-right').on('close', function() {
     $$('.statusbar-overlay').removeClass('with-panel-left with-panel-right');

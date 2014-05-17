@@ -17,7 +17,7 @@
       <div class="view view-right">
         <div class="navbar">
           <div class="navbar-inner">
-            <div class="center sliding">We are:</div>
+            <div class="center sliding">Some Statistics:</div>
           </div>
         </div>
         <div class="pages navbar-through">
@@ -25,16 +25,22 @@
             <div class="page-content">
               <div class="list-block">
                 <ul>
-                  <li><a href="pull-to-refresh.html" class="item-link hao-selected">
+                  <li><a href="#" class="item-link hao-selected">
                       <div class="item-content">
                         <div class="item-inner">
-                          <div class="item-title">Hao Zhou</div>
+                          <div class="item-title">周浩被赞：<span id="haoZanCount"></span> 次</div>
                         </div>
                       </div></a></li>
                   <li><a href="#" class="item-link shan-selected">
                       <div class="item-content">
                         <div class="item-inner">
-                          <div class="item-title">Shan Zhou</div>
+                          <div class="item-title">周姍被赞：<span id="shanZanCount"></span> 次</div>
+                        </div>
+                      </div></a></li>
+                  <li><a href="#" class="item-link shan-selected">
+                      <div class="item-content">
+                        <div class="item-inner">
+                          <div class="item-title">网站被访问：<span id="visitCount"></span> 次</div>
                         </div>
                       </div></a></li>
                 </ul>
@@ -84,7 +90,7 @@
                           <div class="item-title">Leave Your Comment</div>
                         </div>
                       </div></a></li>
-                  <li><a href="list.html" class="item-link">
+                  <li><a href="pull-to-refresh.html" class="item-link">
                       <div class="item-content">
                         <div class="item-media"><i class="icon icon-f7"></i></div>
                         <div class="item-inner">
@@ -142,12 +148,5 @@
     <script type="text/javascript" src="js/framework7.js"></script>
     <script type="text/javascript" src="js/jquery-1.11.0.min.js"></script>
     <script type="text/javascript" src="js/app.js"></script>
-    <script type="text/javascript" charset="utf-8">
-    $(function(){
-    	$.jStorage.set("mykey", "I am Hao Zhou");
-        value = $.jStorage.get("mykey");
-        console.log(value);
-    });
-    </script>
   </body>
 </html>
