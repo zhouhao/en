@@ -34,41 +34,41 @@ $$(document).on('pageInit', function(e) {
         $$('.submitBtn').on('click', function() {
             var name = $('#name').val();
             var comment = $('#comment').val();
-            $.post( remoteURL+"addWish", { name: name, wish: comment}, function(data) {
-                console.log(data);  
-              }
-            );
+            if(name && comment) {
+                $.post( remoteURL+"addWish", { name: name, wish: comment}, function(data) {
+                    $('#name').val("");
+                    $('#comment').val("");
+                    console.log(data);  
+                  }
+                );
+            }
+            mainView.loadPage("pull-to-refresh.html");
         });
     }
     
     // Pull To Refresh Demo
     if (page.name === 'pull-to-refresh') {
-        // Dummy Content
-        var songs = ['Yellow Submarine', 'Don\'t Stop Me Now', 'Billie Jean', 'Californication'];
-        var authors = ['Beatles', 'Queen', 'Michael Jackson', 'Red Hot Chili Peppers'];
-        // Pull to refresh content
         var ptrContent = $$(page.container).find('.pull-to-refresh-content');
+        getWishList(page,false);
         // Add 'refresh' listener on it
         ptrContent.on('refresh', function (e) {
 
-            $.getJSON(remoteURL+"wishList").done(function(data) {
-                $.each(data, function() {
-                    var linkHTML = '<li class="item-content">' +
-                                    '<div class="item-inner">' +
-                                        '<div class="item-title-row">' +
-                                            '<div class="item-title">' + this.name + '</div>' +
-                                        '</div>' +
-                                        '<div class="item-subtitle">' + this.wish + '</div>' +
-                                    '</div>' +
-                                '</li>';
-                    ptrContent.find('ul').prepend(linkHTML);
-                });
-                myApp.pullToRefreshDone();
-            });
-
+            getWishList(page,true);
+                  
         });
     }
     
+});
+$$('.hao-selected').on('click', function() {
+    $.post(remoteURL + 'haoZan',function(data,status){
+        getStat();
+    });
+});
+
+$$('.shan-selected').on('click', function() {
+    $.post(remoteURL + 'shanZan',function(data,status){
+        getStat();
+    });
 });
 
 // Required for demo popover
@@ -82,12 +82,7 @@ $$('.panel-left').on('open', function() {
 });
 $$('.panel-right').on('open', function() {
     $$('.statusbar-overlay').addClass('with-panel-right');
-    $.getJSON(remoteURL + 'showStat').done(function(data) {
-        //myApp.alert(data);
-        $$('#haoZanCount').text(data.haoZan);
-        $$('#shanZanCount').text(data.shanZan);
-        $$('#visitCount').text(data.visit);
-    });
+    getStat();
 
 });
 $$('.panel-left, .panel-right').on('close', function() {
@@ -123,5 +118,30 @@ function createContentPage() {
     );
     return;
 }
-
+function getWishList(page, isRefresh) {
+    $('.media-list ul').empty();
+    var ptrContent = $$(page.container).find('.pull-to-refresh-content');
+        $.getJSON(remoteURL+"wishList").done(function(data) {
+                $.each(data, function() {
+                    var linkHTML = '<li class="item-content">' +
+                                    '<div class="item-inner">' +
+                                        '<div class="item-title-row">' +
+                                            '<div class="item-title">' + this.name + '</div>' +
+                                        '</div>' +
+                                        '<div class="item-subtitle">' + this.wish + '</div>' +
+                                    '</div>' +
+                                '</li>';
+                    ptrContent.find('ul').prepend(linkHTML);
+                });
+                if(isRefresh) myApp.pullToRefreshDone();
+            });
+}
+function getStat() {
+    $.getJSON(remoteURL + 'showStat').done(function(data) {
+        //myApp.alert(data);
+        $$('#haoZanCount').text(data.haoZan);
+        $$('#shanZanCount').text(data.shanZan);
+        $$('#visitCount').text(data.visit);
+    });
+}
 $$(document).on('click', '.ks-generate-page', createContentPage);
