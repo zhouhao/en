@@ -30,10 +30,14 @@ $$(document).on('pageInit', function(e) {
     var page = e.detail.page;
     // Handle Modals Page event when it is init
     
-
-    if (page.name === 'list') {
-        $.getJSON(remoteURL + 'type=' + type).done(function(data) {
-            
+    if (page.name === 'comment') {
+        $$('.submitBtn').on('click', function() {
+            var name = $('#name').val();
+            var comment = $('#comment').val();
+            $.post( remoteURL+"addWish", { name: name, wish: comment}, function(data) {
+                console.log(data);  
+              }
+            );
         });
     }
     
@@ -46,23 +50,22 @@ $$(document).on('pageInit', function(e) {
         var ptrContent = $$(page.container).find('.pull-to-refresh-content');
         // Add 'refresh' listener on it
         ptrContent.on('refresh', function (e) {
-            // Emulate 2s loading
-            setTimeout(function () {
-                var picURL = 'http://hhhhold.com/88/d/jpg?' + Math.round(Math.random() * 100);
-                var song = songs[Math.floor(Math.random() * songs.length)];
-                var author = authors[Math.floor(Math.random() * authors.length)];
-                var linkHTML = '<li class="item-content">' +
+
+            $.getJSON(remoteURL+"wishList").done(function(data) {
+                $.each(data, function() {
+                    var linkHTML = '<li class="item-content">' +
                                     '<div class="item-inner">' +
                                         '<div class="item-title-row">' +
-                                            '<div class="item-title">' + song + '</div>' +
+                                            '<div class="item-title">' + this.name + '</div>' +
                                         '</div>' +
-                                        '<div class="item-subtitle">' + author + '</div>' +
+                                        '<div class="item-subtitle">' + this.wish + '</div>' +
                                     '</div>' +
                                 '</li>';
-                ptrContent.find('ul').prepend(linkHTML);
-                // When loading done, we need to "close" it
+                    ptrContent.find('ul').prepend(linkHTML);
+                });
                 myApp.pullToRefreshDone();
-            }, 2000);
+            });
+
         });
     }
     
